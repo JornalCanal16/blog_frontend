@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type MouseEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { HamburgerMenu } from "@/components/HamburguerMenu";
 import {
@@ -442,7 +443,13 @@ export default function Noticias() {
         <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
           <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2 grayscale opacity-70">
-              <span className="font-bold text-white">Canal 16</span>
+              <Image
+                src="/img/logo.jpg"
+                alt="Logo Jornal Canal 16"
+                width={96}
+                height={96}
+                className="rounded-full border-2 border-[#d4af37] p-1 shadow-2xl"
+              />
             </div>
             <p className="text-[13px]">
               © 2026 Jornal Canal 16 • Centro de Instrução Almirante Braz de
