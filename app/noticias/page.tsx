@@ -446,9 +446,9 @@ export default function Noticias() {
               <Image
                 src="/img/logo.jpg"
                 alt="Logo Jornal Canal 16"
-                width={96}
-                height={96}
-                className="rounded-full border-2 border-[#d4af37] p-1 shadow-2xl"
+                width={76}
+                height={76}
+                className="rounded-full"
               />
             </div>
             <p className="text-[13px]">
