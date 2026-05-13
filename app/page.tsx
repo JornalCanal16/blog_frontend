@@ -102,12 +102,14 @@ export default function Home() {
             </div>
             <div className="w-full md:w-1/2 space-y-6 text-lg text-slate-600 leading-relaxed">
               <p>
-                O <strong className="text-[#0a192f]">Jornal Canal 16</strong> é um portal de notícias
-                criado por alunos da EFOMM (CIABA), em Belém do Pará.
+                O <strong className="text-[#0a192f]">Jornal Canal 16</strong> é um portal de notícias e informações 
+                criado por alunos da EFOMM (Escola de Formação de Oficiais da Marinha Mercante) 
+                do CIABA (Centro de Instrução Almirante Braz de Aguiar), localizado em Belém do Pará.
               </p>
               <p>
-                Nosso foco é apresentar informações sobre a profissão, rotina e
-                adaptação dos alunos, além de cobrir eventos.
+               Nosso foco e apresentar informações relevantes sobre a futura profissão dos alunos,
+                a rotina e o período de adaptação na instituição, além de cobrir eventos e atividades 
+                que marcam a vida academica e profissional de nossos colegas.
               </p>
               <p>
                 Somos um espaço de expressão, informação e conexão entre alunos,
