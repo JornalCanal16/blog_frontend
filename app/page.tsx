@@ -56,7 +56,6 @@ export default function Home() {
           />
 
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight mb-4 max-w-4xl">
-            Jornal <br />
             <span className="bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] bg-clip-text text-transparent">
               Jornal Canal 16
             </span>
