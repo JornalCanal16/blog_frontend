@@ -170,7 +170,7 @@ export default function Home() {
               <div className="text-3xl mb-6">📱</div>
               <h3 className="text-[#d4af37] font-bold text-lg mb-4 italic uppercase tracking-wider">Redes Sociais</h3>
               <div className="flex justify-center gap-4 mt-2">
-                <a href="https://instagram.com/jornalcanal16" className="text-white hover:text-[#d4af37] transition"><FaInstagram size={24} /></a>
+                <a href="https://instagram.com/jornalcanal.16" className="text-white hover:text-[#d4af37] transition"><FaInstagram size={24} /></a>
                 <a href="https://youtube.com/@JornalCanal.16" className="text-white hover:text-[#d4af37] transition"><FaYoutube size={24} /></a>
                 <a href="https://facebook.com/JornalCanal16" className="text-white hover:text-[#d4af37] transition"><FaFacebook size={24} /></a>
               </div>
