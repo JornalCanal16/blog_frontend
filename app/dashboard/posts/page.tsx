@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { usePostStore } from "@/store/postStore";
 import { useTagStore } from "@/store/tagStore";
 import { Plus, X, FileText, Trash2, Pencil, AlertTriangle, Tags, Eye } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function PostsPage() {
   // Assuma que você tenha ou crie um 'updatePost' no seu Zustand store
@@ -251,6 +252,7 @@ function PostModal({
   });
 
   const [files, setFiles] = useState<File[]>([]);
+  const MAX_IMAGES = 15;
   const [loading, setLoading] = useState(false);
   const [selectedTagId, setSelectedTagId] = useState("");
 
@@ -322,16 +324,74 @@ function PostModal({
   };
 
   const addFiles = (newFiles: File[]) => {
-    setFiles((current) => {
-      const merged = [...current, ...newFiles];
-      const uniqueByIdentity = new Map<string, File>();
+    // compress images client-side before storing to reduce upload size
+    (async () => {
+      const currentCount = files.length + urlPreviewImages.length;
+      const allowed = MAX_IMAGES - currentCount;
+      if (allowed <= 0) {
+        toast.warn(`Limite de ${MAX_IMAGES} imagens por post`);
+        return;
+      }
 
-      merged.forEach((fileItem) => {
-        const key = `${fileItem.name}-${fileItem.size}-${fileItem.lastModified}`;
-        uniqueByIdentity.set(key, fileItem);
+      const toProcess = allowed < newFiles.length ? newFiles.slice(0, allowed) : newFiles;
+      if (toProcess.length < newFiles.length) {
+        toast.warn(`Apenas ${toProcess.length} imagem(ns) adicionadas (limite ${MAX_IMAGES})`);
+      }
+
+      const compressedFiles = await Promise.all(
+        toProcess.map((f) => compressImage(f, 1600, 0.8)),
+      );
+
+      setFiles((current) => {
+        const merged = [...current, ...compressedFiles];
+        const uniqueByIdentity = new Map<string, File>();
+
+        merged.forEach((fileItem) => {
+          const key = `${fileItem.name}-${fileItem.size}-${fileItem.lastModified}`;
+          uniqueByIdentity.set(key, fileItem);
+        });
+
+        return Array.from(uniqueByIdentity.values());
       });
+    })();
+  };
 
-      return Array.from(uniqueByIdentity.values());
+  // Compress image using canvas, return a File in webp format
+  const compressImage = (file: File, maxWidth = 1600, quality = 0.8): Promise<File> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith('image/')) return resolve(file);
+
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const baseName = file.name.replace(/\.[^/.]+$/, '');
+              const newFile = new File([blob], `${baseName}.webp`, { type: 'image/webp', lastModified: Date.now() });
+              URL.revokeObjectURL(url);
+              resolve(newFile);
+            } else {
+              URL.revokeObjectURL(url);
+              resolve(file);
+            }
+          },
+          'image/webp',
+          quality,
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(file);
+      };
+      img.src = url;
     });
   };
 
@@ -341,6 +401,14 @@ function PostModal({
 
     try {
       let dataToSubmit: any;
+
+      // Verifica limite total de imagens (arquivos + URLs)
+      const totalImageUrls = parseImageUrls(form.imagemUrlsText).length;
+      if (files.length + totalImageUrls > MAX_IMAGES) {
+        toast.error(`O limite por post é ${MAX_IMAGES} imagens (arquivos + URLs)`);
+        setLoading(false);
+        return;
+      }
 
       // Monta os dados (com ou sem arquivo)
       if (files.length) {
