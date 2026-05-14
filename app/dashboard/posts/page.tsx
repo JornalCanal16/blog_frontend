@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePostStore } from "@/store/postStore";
 import { useTagStore } from "@/store/tagStore";
-import { Plus, X, FileText, Trash2, Pencil, AlertTriangle, Tags } from "lucide-react";
+import { Plus, X, FileText, Trash2, Pencil, AlertTriangle, Tags, Eye } from "lucide-react";
 
 export default function PostsPage() {
   // Assuma que você tenha ou crie um 'updatePost' no seu Zustand store
@@ -88,6 +88,7 @@ export default function PostsPage() {
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4">Autor</th>
                   <th className="px-6 py-4">Tags</th>
+                  <th className="px-6 py-4">Visualizações</th>
                   <th className="px-6 py-4 text-right">Ações</th>
                 </tr>
               </thead>
@@ -143,6 +144,13 @@ export default function PostsPage() {
                           )}
                         </div>
                       )}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-slate-700 font-medium">
+                        <Eye size={16} className="text-blue-500" />
+                        <span>{post.qtdeVisualizacoes || 0}</span>
+                      </div>
                     </td>
 
                     <td className="px-6 py-4 text-right">

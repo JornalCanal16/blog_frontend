@@ -9,6 +9,7 @@ type Post = {
   imagemUrl: string;
   imagemUrls?: string[];
   publicado: boolean;
+  qtdeVisualizacoes?: number;
   tags?: Array<{
     id: string;
     name: string;
