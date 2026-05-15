@@ -350,7 +350,7 @@ export default function Noticias() {
                       {item.titulo}
                     </h3>
                     <p className="text-slate-600 text-sm line-clamp-3 mb-6">
-                      {item.conteudo}
+                      {item.conteudo?.replace(/<[^>]*>?/gm, '')}
                     </p>
 
                     <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between text-blue-700 group-hover:text-blue-800">

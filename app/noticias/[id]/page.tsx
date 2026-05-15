@@ -218,16 +218,7 @@ const [showToast, setShowToast] = useState(false);
     return Math.ceil(palavras / 200);
   };
 
-  const formatarConteudo = (texto: string) => {
-    return texto.split("\n").map((paragrafo, index) => {
-      if (paragrafo.trim() === "") return <br key={index} />;
-      return (
-        <p key={index} className="mb-6">
-          {paragrafo}
-        </p>
-      );
-    });
-  };
+
 
   const goToPrevImage = () => {
     if (postImages.length <= 1) return;
@@ -456,9 +447,10 @@ const [showToast, setShowToast] = useState(false);
 
             {/* CORPO DO TEXTO */}
             <div className="max-w-3xl mx-auto">
-              <div className="text-lg md:text-[20px] leading-relaxed md:leading-[1.8] text-slate-700 font-serif">
-                {formatarConteudo(post.conteudo)}
-              </div>
+              <div 
+                className="prose prose-lg prose-blue max-w-none text-slate-700 font-serif"
+                dangerouslySetInnerHTML={{ __html: post.conteudo || "" }}
+              />
 
               {/* TAGS E COMPARTILHAMENTO (RODAPÉ DO ARTIGO) */}
               <div className="mt-16 pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-6">

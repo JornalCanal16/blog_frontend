@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* O resto do seu código (variáveis, menu, etc) continua aqui em baixo... */
 

@@ -52,5 +52,7 @@ export const useLogsStore = create<LogsState>((set) => ({
     }
   },
 
+ 
+
   clear: () => set({ logs: [], error: null }),
 }));

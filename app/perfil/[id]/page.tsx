@@ -183,7 +183,7 @@ export default function PerfilAutorPage() {
                           {post.titulo}
                         </h3>
                         <p className="mb-4 line-clamp-3 text-sm text-slate-600">
-                          {post.conteudo}
+                          {post.conteudo?.replace(/<[^>]*>?/gm, '')}
                         </p>
                         <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
                           <CalendarDays size={14} />{" "}

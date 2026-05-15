@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { usePostStore } from "@/store/postStore";
 import { useTagStore } from "@/store/tagStore";
 import { Plus, X, FileText, Trash2, Pencil, AlertTriangle, Tags, Eye } from "lucide-react";
 import { toast } from "react-toastify";
+import "react-quill/dist/quill.snow.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function PostsPage() {
   // Assuma que você tenha ou crie um 'updatePost' no seu Zustand store
@@ -506,14 +510,14 @@ function PostModal({
             <label className="text-xs font-semibold text-slate-500 uppercase">
               Conteúdo
             </label>
-            <textarea
-              required
-              rows={6}
-              value={form.conteudo}
-              placeholder="Escreva o corpo da matéria aqui..."
-              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
-              onChange={(e) => setForm({ ...form, conteudo: e.target.value })}
-            />
+            <div className="bg-white rounded-xl overflow-hidden border border-slate-200">
+              <ReactQuill
+                theme="snow"
+                value={form.conteudo}
+                onChange={(content) => setForm({ ...form, conteudo: content })}
+                className="h-64 mb-12"
+              />
+            </div>
           </div>
 
           <div className="space-y-1">
