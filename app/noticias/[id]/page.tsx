@@ -16,6 +16,7 @@ import {
 import { HamburgerMenu } from "@/components/HamburguerMenu";
 import { apiFetch } from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
+import { normalizeRichTextHtml } from "@/utils/richText";
 
 type PostDetail = {
   id: string;
@@ -73,6 +74,10 @@ export default function NoticiaDetalhePage() {
   const [liking, setLiking] = useState(false);
   const postImages = getPostImages(post);
 const [showToast, setShowToast] = useState(false);
+  const normalizedConteudo = useMemo(
+    () => normalizeRichTextHtml(post?.conteudo || ""),
+    [post?.conteudo],
+  );
   useEffect(() => {
     setCurrentImageIndex(0);
   }, [post?.id]);
@@ -449,7 +454,7 @@ const [showToast, setShowToast] = useState(false);
             <div className="max-w-3xl mx-auto">
               <div 
                 className="prose prose-lg prose-blue max-w-none text-slate-700 font-serif"
-                dangerouslySetInnerHTML={{ __html: post.conteudo || "" }}
+                dangerouslySetInnerHTML={{ __html: normalizedConteudo }}
               />
 
               {/* TAGS E COMPARTILHAMENTO (RODAPÉ DO ARTIGO) */}

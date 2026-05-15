@@ -7,6 +7,7 @@ import { useTagStore } from "@/store/tagStore";
 import { Plus, X, FileText, Trash2, Pencil, AlertTriangle, Tags, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-quill-new/dist/quill.snow.css";
+import { normalizeRichTextHtml } from "@/utils/richText";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -404,6 +405,7 @@ function PostModal({
     setLoading(true);
 
     try {
+      const conteudoNormalizado = normalizeRichTextHtml(form.conteudo);
       let dataToSubmit: any;
 
       // Verifica limite total de imagens (arquivos + URLs)
@@ -418,7 +420,7 @@ function PostModal({
       if (files.length) {
         const formData = new FormData();
         formData.append("titulo", String(form.titulo));
-        formData.append("conteudo", String(form.conteudo));
+        formData.append("conteudo", String(conteudoNormalizado));
         formData.append("publicado", String(form.publicado));
         files.forEach((fileItem) => formData.append("files", fileItem));
 
@@ -435,7 +437,7 @@ function PostModal({
 
         dataToSubmit = {
           titulo: form.titulo,
-          conteudo: form.conteudo,
+          conteudo: conteudoNormalizado,
           publicado: form.publicado,
           tagIds: form.tagIds,
           ...(imageUrls.length
