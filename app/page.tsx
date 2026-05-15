@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { HamburgerMenu } from "@/components/HamburguerMenu";
 import { useManagementStore } from "@/store/managementStore";
 import Footer from "@/components/Footer";
@@ -14,6 +14,11 @@ export default function Home() {
   useEffect(() => {
     void fetchMembers();
   }, [fetchMembers]);
+
+  const managementMembers = useMemo(
+    () => members.filter((m) => m.isManagement && m.active),
+    [members],
+  );
 
   return (
     <div className="bg-[#0a192f] min-h-screen text-white">
@@ -126,13 +131,13 @@ export default function Home() {
       <section className="bg-[#0a192f] py-24 border-t border-yellow-500/10">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-black mb-16 tracking-tight text-white">Nossa <span className="text-[#d4af37]">Gerência</span></h2>
-          {loading && members.length === 0 ? (
+          {loading && managementMembers.length === 0 ? (
             <div className="py-12 text-slate-400 italic">Carregando gerência...</div>
-          ) : members.length === 0 ? (
+          ) : managementMembers.length === 0 ? (
             <div className="py-12 text-slate-400 italic">Nenhum membro cadastrado.</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-              {members.map((membro) => (
+              {managementMembers.map((membro) => (
                 <div key={membro.id} className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-[#d4af37]/50 transition-all group">
                   <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-2 border-[#d4af37]/30 group-hover:border-[#d4af37]">
                     {membro.photoUrl ? (

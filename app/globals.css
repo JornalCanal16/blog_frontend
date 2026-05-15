@@ -1,6 +1,30 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Fix para evitar overflow horizontal e melhorar quebras de texto/imagens */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Box sizing global para previsibilidade */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Garantir que imagens, iframes e svg não ultrapassem o container */
+img, picture, video, iframe, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Forçar quebra de palavras longas para evitar overflow em textos */
+p, li, h1, h2, h3, h4, h5, h6, .post-content, .sobre-text {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+
 /* O resto do seu código (variáveis, menu, etc) continua aqui em baixo... */
 
     /* 2. SUAS VARIÁVEIS (mantém só uma versão!) */

@@ -9,6 +9,8 @@ export type ManagementMember = {
   photoUrl: string;
   isManagement: boolean;
   isSobre: boolean;
+  order?: number;
+  active?: boolean;
 };
 
 export type CreateManagementInput = {

@@ -15,7 +15,7 @@ export default function Sobre() {
   }, [fetchMembers]);
 
   const membrosSobre = useMemo(
-    () => members.filter((member) => member.isSobre),
+    () => members.filter((member) => member.isSobre && member.active),
     [members],
   );
 
