@@ -6,9 +6,9 @@ import { usePostStore } from "@/store/postStore";
 import { useTagStore } from "@/store/tagStore";
 import { Plus, X, FileText, Trash2, Pencil, AlertTriangle, Tags, Eye } from "lucide-react";
 import { toast } from "react-toastify";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 export default function PostsPage() {
   // Assuma que você tenha ou crie um 'updatePost' no seu Zustand store
