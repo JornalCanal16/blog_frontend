@@ -90,12 +90,12 @@ export default function PostsPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-slate-50 text-slate-500 border-b border-slate-200/60 text-xs uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="px-6 py-4">Título da Matéria</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Autor</th>
-                  <th className="px-6 py-4">Tags</th>
-                  <th className="px-6 py-4">Visualizações</th>
-                  <th className="px-6 py-4 text-right">Ações</th>
+                  <th className="px-6 py-4 min-w-[240px]">Título da Matéria</th>
+                  <th className="px-6 py-4 min-w-[120px]">Status</th>
+                  <th className="px-6 py-4 min-w-[120px]">Autor</th>
+                  <th className="px-6 py-4 min-w-[150px]">Tags</th>
+                  <th className="px-6 py-4 min-w-[120px]">Visualizações</th>
+                  <th className="px-6 py-4 text-right min-w-[100px] w-[100px]">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -159,18 +159,18 @@ export default function PostsPage() {
                       </div>
                     </td>
 
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-6 py-4 text-right min-w-[100px] w-[100px]">
+                      <div className="flex items-center justify-end gap-2 flex-shrink-0">
                         <button
                           onClick={() => handleOpenEdit(post)}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0"
                           title="Editar"
                         >
                           <Pencil size={16} />
                         </button>
                         <button
                           onClick={() => setPostToDelete(post.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
                           title="Excluir"
                         >
                           <Trash2 size={16} />
