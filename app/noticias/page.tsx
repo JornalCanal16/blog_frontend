@@ -211,11 +211,12 @@ export default function Noticias() {
                       setCurrentPage(1);
                       setSelectedTagIds(values);
                     }}
-                    className="px-4 py-2.5 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm min-w-[200px] max-h-48 overflow-y-auto text-slate-900 font-medium"
+                    size={3}
+                    className="px-3 py-1.5 border border-slate-300 rounded-lg bg-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm w-[150px] max-h-24 overflow-y-auto text-slate-900 font-medium"
                     aria-label="Filtrar por tags"
                   >
                     <option value="" disabled>
-                      Selecione as tags...
+                      Tags...
                     </option>
                     {tags.map((t) => (
                       <option key={t.id} value={t.id} className="text-slate-900">
