@@ -706,11 +706,6 @@ p, li, h1, h2, h3, h4, h5, h6, .post-content, .sobre-text {
         border-color: #cc0000;
     }
 
-    .social-facebook {
-        background: #1877F2;
-        border-color: #0d5dbf;
-    }
-
     .social-link-icon::before {
         content: '';
         position: absolute;

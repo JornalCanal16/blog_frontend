@@ -2,23 +2,50 @@
 
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { HamburgerMenu } from "@/components/HamburguerMenu";
 import { useManagementStore } from "@/store/managementStore";
+import { usePostStore } from "@/store/postStore";
 import Footer from "@/components/Footer";
-import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
-import { Newspaper } from "lucide-react";
+import { FaInstagram, FaYoutube } from "react-icons/fa";
+import { ArrowRight, Newspaper } from "lucide-react";
+
+const getCoverImage = (post: { imagemUrl?: string; imagemUrls?: string[] }) => {
+  const firstFromArray = Array.isArray(post.imagemUrls)
+    ? post.imagemUrls.find((url) => typeof url === "string" && url.trim())
+    : "";
+
+  return firstFromArray || post.imagemUrl || "";
+};
+
+const formatarData = (dataString: string) =>
+  new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(dataString));
 
 export default function Home() {
+  const router = useRouter();
   const { members, loading, fetchMembers } = useManagementStore();
+  const { posts, loading: postsLoading, fetchPublicPosts } = usePostStore();
 
   useEffect(() => {
     void fetchMembers();
   }, [fetchMembers]);
 
+  // /posts/public ja filtra publicado=true e ordena por createdAt desc,
+  // entao limit 3 devolve exatamente as ultimas tres.
+  useEffect(() => {
+    void fetchPublicPosts({ page: 1, limit: 3 });
+  }, [fetchPublicPosts]);
+
   const managementMembers = useMemo(
     () => members.filter((m) => m.isManagement && m.active),
     [members],
   );
+
+  const ultimasNoticias = useMemo(() => posts.slice(0, 3), [posts]);
 
   return (
     <div className="bg-[#0a192f] min-h-screen text-white">
@@ -127,6 +154,75 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ULTIMAS NOTICIAS */}
+      <section className="bg-white py-24 text-[#0a192f] border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
+            <div>
+              <h2 className="text-4xl font-black tracking-tight italic">Últimas Notícias</h2>
+              <div className="mt-4 h-1.5 w-24 bg-gradient-to-r from-[#bf953f] to-[#b38728] rounded-full" />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => router.push("/noticias")}
+              className="group inline-flex items-center gap-2 self-start sm:self-auto rounded-full border border-[#bf953f]/40 px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-[#bf953f] transition-colors hover:bg-[#bf953f] hover:text-white"
+            >
+              Ver todas
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+
+          {postsLoading && ultimasNoticias.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-200 py-20 text-center italic text-slate-400">
+              Carregando notícias...
+            </div>
+          ) : ultimasNoticias.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-200 py-20 text-center italic text-slate-400">
+              Nenhuma notícia publicada ainda.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {ultimasNoticias.map((post) => (
+                <article
+                  key={post.id}
+                  onClick={() => router.push(`/noticias/${post.id}`)}
+                  className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
+                  <div className="relative flex h-52 w-full items-center justify-center overflow-hidden bg-slate-100">
+                    {getCoverImage(post) ? (
+                      <img
+                        src={getCoverImage(post)}
+                        alt={post.titulo}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="text-5xl transition-transform duration-500 group-hover:scale-110">
+                        🚢
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-1 flex-col p-6">
+                    <time className="text-[11px] font-bold uppercase tracking-widest text-[#bf953f]">
+                      {formatarData(post.createdAt)}
+                    </time>
+
+                    <h3 className="mt-3 line-clamp-2 text-lg font-bold leading-snug text-[#0a192f] transition-colors group-hover:text-[#bf953f]">
+                      {post.titulo}
+                    </h3>
+
+                    <span className="mt-auto pt-6 text-sm font-semibold text-slate-500">
+                      {post.autor?.nome || "Redação"}
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* EQUIPE */}
       <section className="bg-[#0a192f] py-24 border-t border-yellow-500/10">
         <div className="max-w-7xl mx-auto px-6 text-center">
@@ -177,7 +273,6 @@ export default function Home() {
               <div className="flex justify-center gap-4 mt-2">
                 <a href="https://instagram.com/jornalcanal.16" className="text-white hover:text-[#d4af37] transition"><FaInstagram size={24} /></a>
                 <a href="https://youtube.com/@JornalCanal.16" className="text-white hover:text-[#d4af37] transition"><FaYoutube size={24} /></a>
-                <a href="https://facebook.com/JornalCanal16" className="text-white hover:text-[#d4af37] transition"><FaFacebook size={24} /></a>
               </div>
             </div>
           </div>

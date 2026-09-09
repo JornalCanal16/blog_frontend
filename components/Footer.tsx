@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaInstagram, FaYoutube } from "react-icons/fa";
 
 type Props = {};
 
@@ -61,13 +61,6 @@ const Footer = (props: Props) => {
                 className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:border-[#d4af37] hover:text-[#d4af37] transition-all duration-300"
               >
                 <FaYoutube size={18} />
-              </a>
-              <a 
-                href="https://facebook.com/JornalCanal16" 
-                target="_blank"
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:border-[#d4af37] hover:text-[#d4af37] transition-all duration-300"
-              >
-                <FaFacebook size={18} />
               </a>
             </div>
           </div>
