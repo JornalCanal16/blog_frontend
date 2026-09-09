@@ -21,6 +21,7 @@ export type CreateManagementInput = {
   isSobre: boolean;
   photoUrl?: string;
   file?: File;
+  order?: number;
 };
 
 export type UpdateManagementInput = {
@@ -31,6 +32,7 @@ export type UpdateManagementInput = {
   isSobre: boolean;
   photoUrl?: string;
   file?: File;
+  order?: number;
 };
 
 type ManagementState = {
@@ -40,6 +42,8 @@ type ManagementState = {
   createMember: (data: CreateManagementInput) => Promise<void>;
   updateMember: (id: string, data: UpdateManagementInput) => Promise<void>;
   deleteMember: (id: string) => Promise<void>;
+  reorderMembers: (ids: string[]) => Promise<void>;
+  moveMember: (id: string, direction: "up" | "down") => Promise<void>;
 };
 
 const normalizeMembersPayload = (payload: unknown): ManagementMember[] => {
@@ -66,6 +70,10 @@ const buildFormData = (data: CreateManagementInput | UpdateManagementInput) => {
   formData.append("descricao", data.descricao);
   formData.append("isManagement", String(data.isManagement));
   formData.append("isSobre", String(data.isSobre));
+
+  if (typeof data.order === "number") {
+    formData.append("order", String(data.order));
+  }
 
   // 🔥 SOMENTE file
   if (hasFile && data.file) {
@@ -115,5 +123,44 @@ export const useManagementStore = create<ManagementState>((set, get) => ({
     set((state) => ({
       members: state.members.filter((member) => member.id !== id),
     }));
+  },
+
+  // Envia a lista inteira na ordem desejada; o backend regrava order = 1..N.
+  reorderMembers: async (ids) => {
+    const previous = get().members;
+
+    // Reordena na hora pra UI nao piscar esperando a rede.
+    const byId = new Map(previous.map((member) => [member.id, member]));
+    const optimistic = ids
+      .map((id) => byId.get(id))
+      .filter((member): member is ManagementMember => Boolean(member));
+
+    set({ members: optimistic });
+
+    try {
+      await apiFetch("/management/reorder", {
+        method: "PATCH",
+        body: JSON.stringify({ ids }),
+      });
+    } catch (error) {
+      set({ members: previous }); // desfaz se o backend recusar
+      throw error;
+    }
+
+    await get().fetchMembers();
+  },
+
+  // Sobe/desce um membro uma posicao dentro da lista completa.
+  moveMember: async (id, direction) => {
+    const ids = get().members.map((member) => member.id);
+    const index = ids.indexOf(id);
+    if (index === -1) return;
+
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= ids.length) return;
+
+    [ids[index], ids[target]] = [ids[target], ids[index]];
+
+    await get().reorderMembers(ids);
   },
 }));

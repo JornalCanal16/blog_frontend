@@ -8,7 +8,7 @@ import {
   type UpdateManagementInput,
   useManagementStore,
 } from "@/store/managementStore";
-import { AlertTriangle, Loader2, Pencil, Plus, Save, Trash2, Upload, X, Users } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, Loader2, Pencil, Plus, Save, Trash2, Upload, X, Users } from "lucide-react";
 
 type MemberModalProps = {
   member?: ManagementMember | null;
@@ -20,9 +20,11 @@ type MemberModalProps = {
 
 export default function DashboardSobrePage() {
   const { user } = useAuthStore();
-  const { members, loading, fetchMembers, createMember, updateMember, deleteMember } = useManagementStore();
+  const { members, loading, fetchMembers, createMember, updateMember, deleteMember, moveMember } =
+    useManagementStore();
   const [modalMember, setModalMember] = useState<ManagementMember | null | undefined>(undefined);
   const [memberToDelete, setMemberToDelete] = useState<ManagementMember | null>(null);
+  const [movingId, setMovingId] = useState<string | null>(null);
 
   useEffect(() => {
     void fetchMembers();
@@ -39,6 +41,17 @@ export default function DashboardSobrePage() {
     );
   }
 
+  const handleMove = async (id: string, direction: "up" | "down") => {
+    setMovingId(id);
+    try {
+      await moveMember(id, direction);
+    } catch {
+      // O store ja desfaz a ordem otimista e o apiFetch mostra o toast de erro.
+    } finally {
+      setMovingId(null);
+    }
+  };
+
   const handleConfirmDelete = async () => {
     if (!memberToDelete) return;
 
@@ -52,7 +65,10 @@ export default function DashboardSobrePage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Sobre</h1>
-          <p className="text-sm text-slate-500 mt-1">Gerencie os membros exibidos na página pública Sobre.</p>
+          <p className="text-sm text-slate-500 mt-1">
+            Gerencie os membros exibidos na página pública Sobre. A ordem abaixo é a mesma
+            usada no site.
+          </p>
         </div>
 
         <button
@@ -80,11 +96,37 @@ export default function DashboardSobrePage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {members.map((member) => (
+          {members.map((member, index) => (
             <article
               key={member.id}
-              className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden"
+              className="relative bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden"
             >
+              {/* Posicao + setas de reordenacao */}
+              <div className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-white/95 backdrop-blur border border-slate-200 shadow-sm px-1.5 py-1">
+                <span className="px-1.5 text-xs font-bold text-slate-700 tabular-nums">
+                  {index + 1}º
+                </span>
+                <button
+                  type="button"
+                  onClick={() => void handleMove(member.id, "up")}
+                  disabled={index === 0 || movingId !== null}
+                  title="Subir uma posição"
+                  aria-label={`Subir ${member.nome} uma posição`}
+                  className="p-1 rounded-full text-slate-500 hover:bg-blue-50 hover:text-blue-800 disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronUp size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleMove(member.id, "down")}
+                  disabled={index === members.length - 1 || movingId !== null}
+                  title="Descer uma posição"
+                  aria-label={`Descer ${member.nome} uma posição`}
+                  className="p-1 rounded-full text-slate-500 hover:bg-blue-50 hover:text-blue-800 disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronDown size={14} />
+                </button>
+              </div>
               <div className="h-40 bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center overflow-hidden">
                 {member.photoUrl ? (
                   <img
